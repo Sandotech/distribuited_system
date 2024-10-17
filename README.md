@@ -1,100 +1,71 @@
-# Consensus Protocol Implementation
+# Distributed Consensus Simulation
 
-This project implements a simplified version of a consensus protocol using Ruby. The primary focus is on how nodes communicate, propose states, and elect a leader in a distributed system.
+This project simulates a simplified version of a distributed consensus algorithm, inspired by the Raft consensus protocol. It demonstrates basic concepts of leader election, state proposals, and network partitions in a distributed system.
 
 ## Overview
 
-The implementation consists of two main classes:
+The simulation consists of a `Node` class that represents individual nodes in a distributed system. These nodes can communicate with each other, elect a leader, propose and agree on states, and handle network partitions.
 
-1. **`RandomTimeGenerator`**: Generates random time intervals to simulate delays in message sending.
-2. **`Node`**: Represents a node in the distributed system, capable of sending messages, handling state proposals, managing neighbor nodes, and participating in elections.
+## Features
 
-## Classes
+- Leader election
+- State proposal and agreement
+- Network partition simulation
+- Basic logging of node actions
 
-### RandomTimeGenerator
+## Requirements
 
-This class provides a method to generate a random time in milliseconds.
+- Ruby (version 2.5 or higher recommended)
+- Logger gem (usually included in standard Ruby installations)
 
-#### Methods
+## Usage
 
-- **`self.random_time(min_ms = 1, max_ms = 1000)`**
-  - Generates a random time between the specified minimum and maximum milliseconds.
-  - Raises an `ArgumentError` if the minimum time is not less than the maximum.
+1. Install the bundle:
+  `
+  bundle install
+  `
+2. Run the simulation:
+   `
+   ruby lib/node.rb
+   `
 
-### Node
+## Class: Node
 
-The `Node` class simulates a node in a distributed system and handles its state, message processing, and neighbor communication.
+The `Node` class is the core of this simulation. Each node has the following key attributes:
 
-#### Attributes
+- `id`: Unique identifier for the node
+- `neighbors`: List of neighboring nodes
+- `log`: Action log of the node
+- `state`: Current state of the node
+- `current_term`: Current term in the election process
+- `role`: Current role (follower, candidate, or leader)
+- `timer`: Random timer for election timeout
 
-- `id`: The unique identifier for the node.
-- `neighbors`: An array of neighboring nodes for communication.
-- `log`: An array to keep track of log messages.
-- `state`: The current state of the node.
-- `current_term`: The current term of the node during the election process.
-- `voted_for`: The ID of the node that this node has voted for in the current term.
-- `role`: The current role of the node (follower, candidate, or leader).
-- `timer`: A random timer generated at node initialization.
-- `status`: The status of the node (active or inactive).
+### Key Methods
 
-#### Methods
+- `initialize(id)`: Creates a new node with the given ID
+- `add_neighbor(node)`: Adds a neighboring node
+- `send_message(message, recipient)`: Sends a message to another node
+- `receive_message(message, sender)`: Receives a message from another node
+- `start_election()`: Initiates an election process
+- `propose_state(new_state)`: Proposes a new state
+- `simulate_partition(partitioned_nodes)`: Simulates a network partition
 
-- **`initialize(id)`**
-  - Initializes a new node with the specified ID and sets up its attributes.
+## Simulation Process
 
-- **`add_neighbor(node)`**
-  - Adds a neighboring node for communication.
+1. Nodes are created and connected as neighbors.
+2. A node proposes a state, triggering leader election if no leader exists.
+3. Network partitions can be simulated, causing nodes to become disconnected.
+4. Nodes continue to propose states and handle leadership changes.
 
-- **`send_message(message, recipient)`**
-  - Sends a message to a neighboring node if it is active.
-
-- **`receive_message(message, sender)`**
-  - Processes incoming messages based on their type.
-
-- **`process_message(message)`**
-  - Determines the type of message and calls the appropriate handler.
-
-- **`handle_state_proposal(message)`**
-  - Processes a state proposal message and validates it.
-
-- **`handle_vote_request(message)`**
-  - Handles incoming vote requests from other nodes.
-
-- **`handle_vote_response(message)`**
-  - Processes incoming vote responses.
-
-- **`start_election`**
-  - Initiates the election process for the node.
-
-- **`become_candidate`**
-  - Changes the node's role to candidate and requests votes.
-
-- **`become_leader`**
-  - Changes the node's role to leader.
-
-- **`propose_state(new_state)`**
-  - Proposes a new state if there is no existing leader.
-
-- **`simulate_partition(partitioned_nodes)`**
-  - Simulates a network partition by disconnecting from specified neighbor nodes.
-
-- **`resolve_partition(partitioned_nodes)`**
-  - Reconnects with previously partitioned nodes.
-
-- **`retrieve_log`**
-  - Returns the log messages as a string.
-
-## Example Usage
-
-The following code demonstrates how to create nodes, add neighbors, and simulate consensus proposals.
+## Example
 
 ```ruby
-# Create nodes
 node1 = Node.new(1)
 node2 = Node.new(2)
 node3 = Node.new(3)
 
-# Add neighbors
+# Connect nodes
 node1.add_neighbor(node2)
 node1.add_neighbor(node3)
 node2.add_neighbor(node1)
@@ -102,17 +73,17 @@ node2.add_neighbor(node3)
 node3.add_neighbor(node1)
 node3.add_neighbor(node2)
 
-# Simulate consensus proposals
+# Simulate state proposals and partitions
 node1.propose_state(1)
-node2.propose_state(2)
-
-# Simulate a partition
 node3.simulate_partition([node1])
-
-# Node2 proposes a new state while node1 is partitioned
 node2.propose_state(3)
 
-# Check logs
-puts "Node 1 Log:\n" + node1.retrieve_log
-puts "Node 2 Log:\n" + node2.retrieve_log
-puts "Node 3 Log:\n" + node3.retrieve_log
+# Display results
+puts "Node 1 Log:\n#{node1.retrieve_log}"
+puts "Node 2 Log:\n#{node2.retrieve_log}"
+puts "Node 3 Log:\n#{node3.retrieve_log}"
+```
+
+## Limitations
+
+This simulation is a simplified version of consensus algorithms and does not include all aspects of protocols like Raft. It's intended for educational purposes and doesn't guarantee safety or liveness properties of full consensus algorithms.
