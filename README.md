@@ -6,6 +6,8 @@ This project simulates a simplified version of a distributed consensus algorithm
 
 The simulation consists of a `Node` class that represents individual nodes in a distributed system. These nodes can communicate with each other, elect a leader, propose and agree on states, and handle network partitions.
 
+![image](https://github.com/user-attachments/assets/bf81a028-0453-419c-a553-86bf16d7decb)
+
 ## Features
 
 - Leader election
@@ -20,14 +22,14 @@ The simulation consists of a `Node` class that represents individual nodes in a 
 
 ## Usage
 
-1. Install the bundle:
-  `
+1- Install the bundle:
+  ```
   bundle install
-  `
-2. Run the simulation:
-   `
+  ```
+2- Run the simulation:
+   ```
    ruby lib/node.rb
-   `
+   ```
 
 ## Class: Node
 
