@@ -199,36 +199,3 @@ class Node
     leader? || any_neighbor_is_leader?
   end
 end
-
-# Example Usage
-node1 = Node.new(1)
-node2 = Node.new(2)
-node3 = Node.new(3)
-
-node1.add_neighbor(node2)
-node1.add_neighbor(node3)
-node2.add_neighbor(node1)
-node2.add_neighbor(node3)
-node3.add_neighbor(node1)
-node3.add_neighbor(node2)
-
-# Simulate state proposals and partitions
-node1.propose_state(1)
-node3.simulate_partition([node1])
-node2.propose_state(3)
-
-puts "Node 1 Log:\n#{node1.retrieve_log}"
-puts "Node 2 Log:\n#{node2.retrieve_log}"
-puts "Node 3 Log:\n#{node3.retrieve_log}"
-
-puts "Node 1 Status: #{node1.statuses.inspect}"
-puts "Node 2 Status: #{node2.statuses.inspect}"
-puts "Node 3 Status: #{node3.statuses.inspect}"
-
-puts "Node 1 Role: #{node1.role}"
-puts "Node 2 Role: #{node2.role}"
-puts "Node 3 Role: #{node3.role}"
-
-puts node1.state
-puts node2.state
-puts node3.state

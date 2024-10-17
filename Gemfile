@@ -4,6 +4,8 @@ source "https://rubygems.org"
 
 # gem "rails"
 
-gem 'rspec'
+group :test do
+  gem 'rspec'
+end
 
 gem 'securerandom'
