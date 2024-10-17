@@ -86,6 +86,10 @@ puts "Node 2 Log:\n#{node2.retrieve_log}"
 puts "Node 3 Log:\n#{node3.retrieve_log}"
 ```
 
-## Limitations
+### Thanks for be here
 
-This simulation is a simplified version of consensus algorithms and does not include all aspects of protocols like Raft. It's intended for educational purposes and doesn't guarantee safety or liveness properties of full consensus algorithms.
+<footer>
+  Diego Santos
+<br/>
+  Backend Developer
+</footer>
