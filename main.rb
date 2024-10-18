@@ -1,4 +1,6 @@
-require_relative 'lib/node.rb'
+# frozen_string_literal: true
+
+require_relative 'lib/node'
 
 node1 = Node.new(1)
 node2 = Node.new(2)
