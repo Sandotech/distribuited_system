@@ -1,3 +1,13 @@
+<div align="center">
+  <a href="https://www.linkedin.com/in/sandotech" target="_blank">
+    <img src="  https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white">
+  </a>&nbsp;&nbsp;
+  <img src="https://img.shields.io/badge/Ruby-CC342D?style=for-the-badge&logo=ruby&logoColor=white" alt="Ruby">&nbsp;&nbsp;
+  <a href="https://www.github.com/Sandotech" target="_blank">
+  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white">
+  </a>
+</div>
+
 # Distributed Consensus Simulation
 
 This project simulates a simplified version of a distributed consensus algorithm, inspired by the Raft consensus protocol. It demonstrates basic concepts of leader election, state proposals, and network partitions in a distributed system.
@@ -23,35 +33,42 @@ The simulation consists of a `Node` class that represents individual nodes in a 
 ## Usage
 
 1- Install the bundle:
-  ```
+  ```sh
   bundle install
   ```
 2- Run the simulation:
+   ```sh
+   ruby main.rb
    ```
-   ruby lib/node.rb
-   ```
+3- Run the tests (optional but recommended)
+  ```sh
+   bundle exec rspec --format documentation
+  ```
 
 ## Class: Node
 
-The `Node` class is the core of this simulation. Each node has the following key attributes:
+<div align="center">
 
-- `id`: Unique identifier for the node
-- `neighbors`: List of neighboring nodes
-- `log`: Action log of the node
-- `state`: Current state of the node
-- `current_term`: Current term in the election process
-- `role`: Current role (follower, candidate, or leader)
-- `timer`: Random timer for election timeout
+| Property       | Description                                       |
+|----------------|---------------------------------------------------|
+| `id`           | Unique identifier for the node                    |
+| `neighbors`    | List of neighboring nodes                         |
+| `log`          | Action log of the node                            |
+| `state`        | Current state of the node                         |
+| `current_term` | Current term in the election process              |
+| `role`         | Current role (follower, candidate, or leader)     |
+| `timer`        | Random timer for election timeout                 |
+</div>
 
-### Key Methods
+### Node Class Methods 🚀
 
-- `initialize(id)`: Creates a new node with the given ID
-- `add_neighbor(node)`: Adds a neighboring node
-- `send_message(message, recipient)`: Sends a message to another node
-- `receive_message(message, sender)`: Receives a message from another node
-- `start_election()`: Initiates an election process
-- `propose_state(new_state)`: Proposes a new state
-- `simulate_partition(partitioned_nodes)`: Simulates a network partition
+- **`initialize(id)`**: Creates a new node with the given ID.
+- **`add_neighbor(node)`**: Adds a neighboring node 🔗
+- **`send_message(message, recipient)`**: Sends a message to another node.
+- **`receive_message(message, sender)`**: Receives a message from another node.
+- **`start_election()`**: Initiates an election process.
+- **`propose_state(new_state)`**: Proposes a new state.
+- **`simulate_partition(partitioned_nodes)`**: Simulates a network partition.
 
 ## Simulation Process
 
