@@ -9,3 +9,4 @@ group :test do
 end
 
 gem 'securerandom'
+gem "terminal-table", "~> 3.0"

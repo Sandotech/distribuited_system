@@ -77,12 +77,6 @@ class Node
     @neighbors.each { |neighbor| neighbor.statuses[@id - 1] = :leader }
   end
 
-  # Log any action
-  def log_action(action)
-    @log.push(action)
-    @logger.info(action)
-  end
-
   # Retrieve log for analysis
   def retrieve_log
     @log.join("\n")
@@ -107,9 +101,16 @@ class Node
     @vote_count = 0
   end
 
+  # Log any action
+  def log_action(message)
+    @log << message
+    @logger.info(message)
+  end
+
   def initialize_logger
     @log = []
     @logger = Logger.new($stdout)
+    @logger.level = Logger::WARN # This is to debug purposes
     log_action("Node #{@id} initialized")
   end
 end
