@@ -16,7 +16,7 @@ This project simulates a simplified version of a distributed consensus algorithm
 
 ## Overview
 
-The simulation consists of a `Node` class that represents individual nodes in a distributed system. These nodes can communicate with each other, elect a leader, propose and agree on states, and handle network partitions.
+The simulation consists of a `Node` class that represents individual nodes in a distributed system. These nodes can communicate with each other, elect a leader, propose and agree on states, and handle network partitions. Logs of node actions can be retrieved in a structured format for analysis.
 
 ![image](https://github.com/user-attachments/assets/bf81a028-0453-419c-a553-86bf16d7decb)
 
@@ -25,7 +25,8 @@ The simulation consists of a `Node` class that represents individual nodes in a 
 - Leader election
 - State proposal and agreement
 - Network partition simulation
-- Basic logging of node actions
+- Structured logs for each node
+- Customizable logging levels for cleaner output
 
 ## Requirements
 
@@ -34,20 +35,26 @@ The simulation consists of a `Node` class that represents individual nodes in a 
 
 ## Usage
 
-1- Install the bundle:
-  ```sh
-  bundle install
-  ```
-2- Run the simulation:
+1. Install the bundle:
+   ```sh
+   bundle install
+   ```
+
+2. Run the simulation:
    ```sh
    ruby main.rb
    ```
-3- Run the tests (optional but recommended)
-  ```sh
+
+3. Run the tests (optional but recommended):
+   ```sh
    bundle exec rspec --format documentation
-  ```
-  
-## Class: Node
+   ```
+
+## Node Class
+
+The `Node` class simulates the behavior of a node in a distributed consensus system. Each node maintains a log of actions and communicates with other nodes to elect a leader and propose states.
+
+### Properties
 
 | Property       | Description                                       |
 |----------------|---------------------------------------------------|
@@ -69,17 +76,29 @@ The simulation consists of a `Node` class that represents individual nodes in a 
 - **`propose_state(new_state)`**: Proposes a new state.
 - **`simulate_partition(partitioned_nodes)`**: Simulates a network partition.
 
+## Key Updates
+
+1. **Logging Level Control**: The logging mechanism has been updated to allow control over log levels. By default, only warning and higher levels (such as errors) will be printed to the console. This reduces noise from `INFO` level logs during normal execution. To change the logging level, modify the `@logger.level` in the `Node` class.
+    ```ruby
+    @logger.level = Logger::WARN  # Only warnings and errors are shown
+    ```
+   
+2. **Log Structure**: Each node maintains an internal log of its actions that can be retrieved and printed in a structured format. This helps in understanding the sequence of events and the decision-making process of each node.
+
+3. **Enhanced Network Partition Handling**: The `simulate_partition` method allows more flexible simulation of network failures between nodes. This feature can be used to explore the behavior of the system in various failure scenarios.
+
 ## Simulation Process
 
 1. Nodes are created and connected as neighbors.
 2. A node proposes a state, triggering leader election if no leader exists.
 3. Network partitions can be simulated, causing nodes to become disconnected.
 4. Nodes continue to propose states and handle leadership changes.
+5. Logs for each node are printed after the simulation for detailed analysis.
 
 ## Example
 
 ```ruby
-# /distribuited_system/main.rb
+# /distributed_system/main.rb
 
 node1 = Node.new(1)
 node2 = Node.new(2)
@@ -104,11 +123,60 @@ puts "Node 2 Log:\n#{node2.retrieve_log}"
 puts "Node 3 Log:\n#{node3.retrieve_log}"
 ```
 
+## Sample Output
+
+```
++----------------------------------------+
+|               Node 1 Log               |
++------+---------------------------------+
+| Step | Log Entry                       |
++------+---------------------------------+
+| 1    | Node 1 initialized              |
+| 2    | Node 1 added neighbor Node 2    |
+| 3    | Node 1 added neighbor Node 3    |
+| 4    | Node 1 is proposing state 1     |
+| 5    | Node 1 became leader for term 0 |
+| 6    | Node 1 became follower          |
++------+---------------------------------+
+
++--------------------------------------------------------------+
+|                          Node 2 Log                          |
++------+-------------------------------------------------------+
+| Step | Log Entry                                             |
++------+-------------------------------------------------------+
+| 1    | Node 2 initialized                                    |
+| 2    | Node 2 added neighbor Node 1                          |
+| 3    | Node 2 added neighbor Node 3                          |
+| 4    | Node 2 received vote request from Node 3 for term 1   |
+| 5    | Node 2 became follower                                |
+| 6    | Node 2 sending vote response to Node 3: true          |
+| 7    | Node 2 received vote request from Node 3 for term 1   |
+| 8    | Node 2 sending vote response to Node 3: false         |
+| 9    | Node 2 cannot propose state 3 because a leader exists |
++------+-------------------------------------------------------+
+
++-----------------------------------------------------+
+|                     Node 3 Log                      |
++------+----------------------------------------------+
+| Step | Log Entry                                    |
++------+----------------------------------------------+
+| 1    | Node 3 initialized                           |
+| 2    | Node 3 added neighbor Node 1                 |
+| 3    | Node 3 added neighbor Node 2                 |
+| 4    | Node 3 simulating partition from Node 1      |
+| 5    | Node 3 can no longer communicate with Node 1 |
+| 6    | Node 3 became candidate for term 1           |
+| 7    | Node 3 received vote from Node 2 for term 1  |
+| 8    | Node 3 became leader for term 1              |
++------+----------------------------------------------+
+```
+
 <footer align="center">
   Diego Santos
 <br/>
   Backend Developer
 </footer>
 
-<h3 align="center">Thanks for be here</h3>
+<h3 align="center">Thanks for being here</h3>
 
+--- 
