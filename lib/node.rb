@@ -2,95 +2,23 @@
 
 require 'logger'
 require_relative 'time_generator'
+require_relative 'election'
+require_relative 'comunication'
 
-# Node class that communicates with oher nodes, save state, and choose a leader node
+# Node class that communicates with other nodes, saves state, and chooses a leader node
 class Node
+  include Election
+  include Communication
+
   attr_reader :id, :neighbors, :log, :current_term, :voted_for, :role, :timer
   attr_accessor :state, :statuses, :vote_count
 
   def initialize(id)
     @id = id
-    @neighbors = []
-    @log = []
-    @state = []
-    @current_term = 0
-    @voted_for = nil
-    @timer = RandomTimeGenerator.random_time
-    @role = :follower
-    @vote_count = 0
-    @statuses = Array.new(3, :active) # This depends on the needs
-    @logger = Logger.new($stdout)
-    log_action("Node #{@id} initialized")
-  end
-
-  # Add neighbor node for communication
-  def add_neighbor(node)
-    @neighbors << node unless @neighbors.include?(node)
-    log_action("Node #{@id} added neighbor Node #{node.id}")
-  end
-
-  # Send message to recipient
-  def send_message(message, recipient)
-    if @neighbors.include?(recipient) && recipient.active?
-      recipient.receive_message(message, self)
-      log_action("Node #{@id} sent message: '#{message}' to Node #{recipient.id}")
-    else
-      log_action("Node #{@id} failed to send message to Node #{recipient.id} (inactive or not a neighbor)")
-    end
-  end
-
-  # Receive and process a message
-  def receive_message(message, sender)
-    log_action("Node #{@id} received message: '#{message}' from Node #{sender.id}")
-    process_message(message)
-  end
-
-  # Simulate election process
-  def start_election
-    become_candidate
-    request_votes
-  end
-
-  def become_follower
-    @role = :follower
-    log_action("Node #{@id} became follower")
-  end
-
-  # Handle vote reception
-  def receive_vote(vote)
-    return unless @role == :candidate
-
-    log_action("Node #{@id} received vote from Node #{vote[:from]} for term #{vote[:term]}")
-
-    return unless vote[:term] == @current_term && vote[:granted]
-
-    @vote_count += 1
-    become_leader if @vote_count > (@neighbors.size / 2)
-  end
-
-  # Collect timers from neighbors and self
-  def all_timers
-    @neighbors.map(&:timer) + [@timer]
-  end
-
-  # Request votes from neighbors
-  def request_votes
-    @neighbors.each { |neighbor| neighbor.receive_vote_request(term: @current_term, from: @id) }
-  end
-
-  def receive_vote_request(request)
-    return unless request[:term] >= @current_term
-
-    log_action("Node #{@id} received vote request from Node #{request[:from]} for term #{request[:term]}")
-
-    if request[:term] > @current_term
-      @current_term = request[:term]
-      become_follower
-    end
-
-    grant_vote = !@voted_for && request[:term] == @current_term
-    @voted_for = request[:from] if grant_vote
-    send_vote_response(request[:from], grant_vote)
+    initialize_neighbors
+    initialize_state
+    initialize_election_params
+    initialize_logger
   end
 
   # Check if current node is leader
@@ -135,53 +63,18 @@ class Node
     @neighbors.each { |neighbor| neighbor.state = proposed_state }
   end
 
-  # Simulate partitioning of nodes
-  def simulate_partition(partitioned_nodes)
-    log_action("Node #{@id} simulating partition from Nodes #{partitioned_nodes.map(&:id).join(', ')}")
-    become_follower if leader?
-
-    partitioned_nodes.each do |node|
-      next unless @neighbors.include?(node)
-
-      @neighbors.delete(node)
-      node.statuses[@id - 1] = :died
-      node.become_follower
-      log_action("Node #{@id} can no longer communicate with Node #{node.id}")
-    end
-
-    start_election
-  end
-  
   # Check if node is active
   def active?
     @statuses[@id - 1] == :active
   end
 
-  def become_candidate
-    return if there_is_leader?
-
-    @role = :candidate
-    @current_term += 1
-    @voted_for = nil
-    log_action("Node #{@id} became candidate for term #{@current_term}")
-    request_votes
-  end
-
-  def become_leader
-    @role = :leader
-    log_action("Node #{@id} became leader for term #{@current_term}")
-    update_follower_statuses
+  def become_follower
+    @role = :follower
+    log_action("Node #{@id} became follower")
   end
 
   def update_follower_statuses
     @neighbors.each { |neighbor| neighbor.statuses[@id - 1] = :leader }
-  end
-
-  # Send vote response
-  def send_vote_response(candidate_id, granted)
-    log_action("Node #{@id} sending vote response to Node #{candidate_id}: #{granted}")
-    neighbor = @neighbors.find { |n| n.id == candidate_id }
-    neighbor&.receive_vote(term: @current_term, from: @id, granted: granted)
   end
 
   # Log any action
@@ -195,7 +88,28 @@ class Node
     @log.join("\n")
   end
 
-  def there_is_leader?
-    leader? || any_neighbor_is_leader?
+  private
+
+  def initialize_neighbors
+    @neighbors = []
+  end
+
+  def initialize_state
+    @state = []
+    @statuses = Array.new(3, :active)
+  end
+
+  def initialize_election_params
+    @current_term = 0
+    @voted_for = nil
+    @timer = RandomTimeGenerator.random_time
+    @role = :follower
+    @vote_count = 0
+  end
+
+  def initialize_logger
+    @log = []
+    @logger = Logger.new($stdout)
+    log_action("Node #{@id} initialized")
   end
 end
