@@ -18,7 +18,7 @@ The simulation consists of a `Node` class that represents individual nodes in a 
 ## Requirements
 
 - Ruby (version 2.5 or higher recommended)
-- Logger gem (usually included in standard Ruby installations)
+- Bundle to handle configuration
 
 ## Usage
 
