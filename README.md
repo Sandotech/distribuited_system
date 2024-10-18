@@ -46,10 +46,8 @@ The simulation consists of a `Node` class that represents individual nodes in a 
   ```sh
    bundle exec rspec --format documentation
   ```
-
+  
 ## Class: Node
-
-<div align="center">
 
 | Property       | Description                                       |
 |----------------|---------------------------------------------------|
@@ -60,7 +58,6 @@ The simulation consists of a `Node` class that represents individual nodes in a 
 | `current_term` | Current term in the election process              |
 | `role`         | Current role (follower, candidate, or leader)     |
 | `timer`        | Random timer for election timeout                 |
-</div>
 
 ### Node Class Methods 🚀
 
@@ -82,6 +79,8 @@ The simulation consists of a `Node` class that represents individual nodes in a 
 ## Example
 
 ```ruby
+# /distribuited_system/main.rb
+
 node1 = Node.new(1)
 node2 = Node.new(2)
 node3 = Node.new(3)
@@ -105,10 +104,11 @@ puts "Node 2 Log:\n#{node2.retrieve_log}"
 puts "Node 3 Log:\n#{node3.retrieve_log}"
 ```
 
-### Thanks for be here
-
-<footer>
+<footer align="center">
   Diego Santos
 <br/>
   Backend Developer
 </footer>
+
+<h3 align="center">Thanks for be here</h3>
+
